@@ -6,14 +6,14 @@ import json
 
 class TwitterCommandLineAPI(object):
 
-    #Twitter Api initialization
+
     def __init__(self):
         consumer_key = None
         consumer_secret = os.environ.get('CONSUMER_SECRET')
         access_token = os.environ.get('ACCESS_TOKEN')
         access_secret_token = os.environ.get('ACCESS_SECRET_TOKEN')
 
-        #read credentials from text file if exists
+        #read the credentials from text file if exists
         json_file = open('credentials.txt', 'a+')
         json_data = json_file.read()
 
@@ -30,7 +30,7 @@ class TwitterCommandLineAPI(object):
                 consumer_key = raw_input("please enter your twitter consumer key")
                 consumer_secret = raw_input("Please enter your twitter consumer secret")
                 access_token = raw_input("Please enter your twitter access token")
-                access_secret_token = raw_input("Please enter your twitter secret token")
+                access_secret_token = raw_input("Please enter your twitter access secret token")
 
         #Twitter api initialization
         self.api = twitter.Api(consumer_key=consumer_key,
@@ -38,7 +38,7 @@ class TwitterCommandLineAPI(object):
                                access_token_key=access_token,
                                access_token_secret=access_secret_token)
 
-        #if no credentials available create and store in a file
+        #if no credentials, create and store in a text file
         if not json_data:
             self.api.VerifyCredentials()
             json_data = {'consumer_key': consumer_key, 'consumer_secret': consumer_secret,
@@ -48,7 +48,7 @@ class TwitterCommandLineAPI(object):
         json_file.close()
 
 
-    #Displays all the friends list
+    #Displays all the list of friends
     def show_friends_list(self):
         friends_list = self.api.GetFriends()
         print friends_list
@@ -60,19 +60,20 @@ class TwitterCommandLineAPI(object):
         print len(tweets)
 
 if __name__ == '__main__':
-    twitter_cmd = TwitterCommandLineAPI()
+    twitter_command_line_api = TwitterCommandLineAPI()
     try:
-        twitter_cmd.api.VerifyCredentials()
+        twitter_command_line_api.api.VerifyCredentials()
 
         tweet_number = re.match('\d+', sys.argv[1])
 
         if tweet_number:
             tweet_number = tweet_number.group(0)
-            twitter_cmd.timeline_tweets(tweet_number)
+            twitter_command_lin_api.timeline_tweets(tweet_number)
 
-        #python twitter_command_line_api.py friends will display friends
-        if sys.argv[1] == 'friends':
-            twitter_cmd.show_friends_list()
+        # python twitter_command_line_api.py list_of_friends
+        # The above command will display list of friends
+        if sys.argv[1] == 'list_of_friends':
+            twitter_command_line_api.show_friends_list()
 
 
     except twitter.TwitterError as errors:
